@@ -18,11 +18,12 @@ env/
 models/
 
 # Generated data & outputs
-*.csv
 figures/
-results/
 data/*.csv
 data/*.zip
+
+# In results/, ignore CSVs but keep markdown tables
+results/*.csv
 
 # Jupyter
 .ipynb_checkpoints/
