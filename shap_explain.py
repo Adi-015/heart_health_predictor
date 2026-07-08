@@ -27,8 +27,6 @@ def build_explainer(model, X_background):
     """
     Returns a SHAP explainer appropriate for the model type.
     X_background only used for LinearExplainer / KernelExplainer fallback.
-    XGBClassifier must be trained with base_score=0.5 (explicit float) to
-    avoid a shap 0.49 / XGBoost 3.x bracketed base_score parsing bug.
     """
     if isinstance(model, (XGBClassifier, RandomForestClassifier)):
         return shap.TreeExplainer(model)
@@ -39,7 +37,10 @@ def build_explainer(model, X_background):
 
 def shap_values_for(explainer, X):
     vals = explainer.shap_values(X)
-    # RF returns [class0_vals, class1_vals]; tree/linear return a single array
+    # RF returns (n_samples, n_features, n_classes) — take class 1
+    if isinstance(vals, np.ndarray) and vals.ndim == 3:
+        return vals[:, :, 1]
+    # older shap versions return a list [class0_vals, class1_vals]
     if isinstance(vals, list):
         return vals[1]
     return vals
