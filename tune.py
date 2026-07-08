@@ -52,7 +52,9 @@ def tune_random_forest(X_train, y_train):
 
 
 def tune_xgboost(X_train, y_train):
-    # scale_pos_weight helps when optimising recall on imbalanced data
+    # scale_pos_weight helps when optimising recall on imbalanced data.
+    # base_score=0.5 keeps the stored value as a plain float, avoiding a
+    # shap 0.49 / XGBoost 3.x incompatibility with the auto-computed bracketed format.
     neg, pos = (y_train == 0).sum(), (y_train == 1).sum()
     param_dist = {
         "n_estimators":    [100, 200, 300],
@@ -62,7 +64,7 @@ def tune_xgboost(X_train, y_train):
         "scale_pos_weight": [1, neg / pos, 2 * neg / pos],
     }
     search = RandomizedSearchCV(
-        XGBClassifier(eval_metric="logloss", random_state=RND),
+        XGBClassifier(eval_metric="logloss", base_score=0.5, random_state=RND),
         param_dist,
         n_iter=40,
         scoring="recall",

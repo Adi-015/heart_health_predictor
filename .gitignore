@@ -22,8 +22,9 @@ figures/
 data/*.csv
 data/*.zip
 
-# In results/, ignore CSVs but keep markdown tables
+# In results/, ignore generated outputs but keep markdown tables
 results/*.csv
+results/*.png
 
 # Jupyter
 .ipynb_checkpoints/
