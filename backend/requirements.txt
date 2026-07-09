@@ -1,0 +1,7 @@
+fastapi==0.137.1
+uvicorn==0.29.0
+pydantic==2.13.4
+slowapi==0.1.10
+loguru==0.7.3
+httpx==0.28.1
+pytest==9.1.1
