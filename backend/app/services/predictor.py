@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from loguru import logger
 
 from app.core.model_loader import ModelStore
 from app.schemas.patient import PatientInput, PredictionResponse, SHAPFactor
@@ -17,16 +18,21 @@ def predict(patient: PatientInput) -> PredictionResponse:
     label = "High Risk" if prob >= 0.5 else "Low Risk"
 
     sv = shap_values_for(ModelStore.explainer, X)
-    # sv is (1, n_features) — take the single row
     impacts = sv[0]
     names = ModelStore.feature_names
 
-    # Sort by absolute impact, keep top N
     ranked = sorted(zip(names, impacts), key=lambda x: abs(x[1]), reverse=True)
     top_factors = [
         SHAPFactor(feature=name, impact=round(float(val), 4))
         for name, val in ranked[:TOP_N]
     ]
+
+    # Log summary — no raw field values to stay privacy-conscious
+    logger.info(
+        "prediction | age={} sex={} result={} prob={:.4f} top_feature={}",
+        patient.age, patient.sex, label, prob,
+        top_factors[0].feature if top_factors else "n/a",
+    )
 
     return PredictionResponse(
         risk_label=label,
