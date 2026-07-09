@@ -15,6 +15,7 @@ from preprocess import build_preprocessing_pipeline
 from train import NUMERIC, CATEGORICAL, FEATURES
 from data.load_data import load_heart_data
 from sklearn.model_selection import train_test_split
+from shap_explain import build_explainer, shap_values_for
 
 
 class ModelStore:
@@ -31,7 +32,6 @@ def load_artifacts():
     with open(METADATA_PATH) as f:
         ModelStore.metadata = json.load(f)
 
-    # Refit preprocessor on training split — same seed as training
     df = load_heart_data()
     train_df, _ = train_test_split(df, test_size=0.2, stratify=df["target"], random_state=42)
     preprocessor = build_preprocessing_pipeline(NUMERIC, CATEGORICAL)
@@ -40,3 +40,6 @@ def load_artifacts():
 
     ohe = preprocessor.named_transformers_["cat"].named_steps["onehot"]
     ModelStore.feature_names = NUMERIC + list(ohe.get_feature_names_out(CATEGORICAL))
+
+    X_train = preprocessor.transform(train_df[FEATURES])
+    ModelStore.explainer = build_explainer(ModelStore.model, X_train)
