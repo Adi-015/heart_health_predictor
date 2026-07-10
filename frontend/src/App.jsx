@@ -1,3 +1,5 @@
+import PatientForm from './PatientForm'
+
 export default function App() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
@@ -6,7 +8,7 @@ export default function App() {
         <p className="text-gray-500 text-sm mb-8">
           Enter patient data to estimate cardiovascular disease risk.
         </p>
-        {/* Form and results go here */}
+        <PatientForm onSubmit={console.log} loading={false} />
       </main>
     </div>
   )
