@@ -34,7 +34,7 @@ export default function PatientForm({ onSubmit, loading }) {
       {/* Demographics */}
       <section>
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Demographics</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Age" hint="1–120">
             <input type="number" min={1} max={120} value={form.age}
               onChange={e => num('age', e.target.value)}
@@ -53,7 +53,7 @@ export default function PatientForm({ onSubmit, loading }) {
       {/* Symptoms */}
       <section>
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Symptoms</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Chest Pain Type">
             <select value={form.cp} onChange={e => num('cp', e.target.value)} className={inputCls}>
               <option value={0}>Typical Angina</option>
@@ -75,7 +75,7 @@ export default function PatientForm({ onSubmit, loading }) {
       {/* Vitals */}
       <section>
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Vitals</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Resting BP" hint="mm Hg">
             <input type="number" min={50} max={250} value={form.trestbps}
               onChange={e => num('trestbps', e.target.value)} className={inputCls} required />
@@ -103,7 +103,7 @@ export default function PatientForm({ onSubmit, loading }) {
       {/* Diagnostics */}
       <section>
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Diagnostics</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Resting ECG">
             <select value={form.restecg} onChange={e => num('restecg', e.target.value)} className={inputCls}>
               <option value={0}>Normal</option>
