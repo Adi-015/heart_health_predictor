@@ -7,7 +7,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from app.main import app
 
-# context manager ensures lifespan (load_artifacts) runs before any test
 @pytest.fixture(scope="session")
 def client():
     with TestClient(app) as c:
@@ -30,6 +29,15 @@ def test_predict_valid_input(client):
     assert len(data["top_factors"]) > 0
     assert "feature" in data["top_factors"][0]
     assert "impact" in data["top_factors"][0]
+
+
+def test_predict_probability_regression(client):
+    # Canonical value produced by the saved model + saved preprocessor during Day 2 evaluation.
+    # If this drifts it means the loaded artifacts changed or the preprocessor is being re-fit.
+    resp = client.post("/predict", json=VALID_PATIENT)
+    assert resp.status_code == 200
+    prob = resp.json()["probability"]
+    assert abs(prob - 0.7208) < 0.001, f"Probability drifted: expected ~0.7208, got {prob}"
 
 
 def test_predict_missing_field(client):

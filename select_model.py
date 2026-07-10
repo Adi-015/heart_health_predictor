@@ -12,7 +12,7 @@ os.makedirs("models", exist_ok=True)
 
 
 def run_all_tuned():
-    X_train, X_test, y_train, y_test, _ = load_data_splits()
+    X_train, X_test, y_train, y_test, preprocessor = load_data_splits()
 
     tuners = [
         ("Logistic Regression (tuned)", tune_logistic_regression),
@@ -31,7 +31,7 @@ def run_all_tuned():
         best_params_map[name] = params
         print(f"  recall={metrics['recall']}  f1={metrics['f1']}  roc_auc={metrics['roc_auc']}")
 
-    return results, X_test, y_test
+    return results, X_test, y_test, preprocessor
 
 
 def pick_winner(results):
@@ -40,7 +40,7 @@ def pick_winner(results):
 
 
 if __name__ == "__main__":
-    results, X_test, y_test = run_all_tuned()
+    results, X_test, y_test, preprocessor = run_all_tuned()
 
     rows = [r[3] for r in results]
     save_md_table(rows, "results/tuned_model_comparison.md", "Tuned Model Comparison — UCI Cleveland")
@@ -51,6 +51,7 @@ if __name__ == "__main__":
 
     save_confusion_matrix(winner_model, X_test, y_test, winner_name)
     joblib.dump(winner_model, "models/model.pkl")
+    joblib.dump(preprocessor, "models/preprocessor.pkl")
 
     metadata = {
         "model_type":   winner_name,
@@ -63,6 +64,6 @@ if __name__ == "__main__":
     with open("models/metadata.json", "w") as f:
         json.dump(metadata, f, indent=2)
 
-    print("\nSaved models/model.pkl and models/metadata.json")
+    print("\nSaved models/model.pkl, models/preprocessor.pkl, and models/metadata.json")
     print("\n=== Tuned Model Comparison ===")
     print(pd.DataFrame(rows).set_index("model").to_string())
