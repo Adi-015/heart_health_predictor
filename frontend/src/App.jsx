@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PatientForm from './PatientForm'
+import ResultCard from './ResultCard'
 import { predict } from './api'
 
 export default function App() {
@@ -36,12 +37,7 @@ export default function App() {
           </div>
         )}
 
-        {/* Results rendered in Commit 4 */}
-        {result && (
-          <pre className="mt-6 p-4 bg-gray-100 rounded text-xs overflow-auto">
-            {JSON.stringify(result, null, 2)}
-          </pre>
-        )}
+        {result && <ResultCard result={result} />}
       </main>
     </div>
   )
