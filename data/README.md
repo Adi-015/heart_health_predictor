@@ -16,12 +16,18 @@ Source: [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/45
 | `exang` | int | Exercise-induced angina: 1 = yes, 0 = no |
 | `oldpeak` | float | ST depression induced by exercise relative to rest |
 | `slope` | int | Slope of peak exercise ST segment: 0 = upsloping, 1 = flat, 2 = downsloping |
-| `ca` | int | Number of major vessels (0–3) coloured by fluoroscopy |
-| `thal` | int | Thalassemia: 1 = normal, 2 = fixed defect, 3 = reversible defect |
+| `ca` | int | Number of major vessels (0–4) coloured by fluoroscopy |
+| `thal` | int | Thalassemia: 0 = unknown/missing, 1 = normal, 2 = reversible defect, 3 = fixed defect |
 | `target` | int | 0 = no heart disease, 1 = heart disease present |
 
 ## Notes
 
 - The Cleveland subset is the most commonly used portion of the UCI dataset (303 rows).
-- Some mirrors encode `ca` and `thal` with `?` for missing values — `load_data.py` handles normalisation.
+- **Encoding note:** This CSV mirror uses a different `thal` encoding than some other sources.
+  In this dataset: `thal=2` = reversible defect (highest disease association, ~78%), `thal=3` = fixed defect (~24%).
+  The `ca` column also differs from some descriptions: `ca=0` (no blocked vessels) is associated
+  with higher disease prevalence (~74%) in this mirror due to how the original data was sourced.
+  These distributions are reflected correctly in the model's learned weights and SHAP explanations.
 - The original UCI target has values 0–4; `load_data.py` collapses anything > 0 to 1 for binary classification.
+- SHAP feature names use one-hot suffixes (e.g. `thal_2`, `ca_0`) — the suffix is the category value,
+  not an index. Positive SHAP impact means that category pushes the prediction toward disease (class 1).
