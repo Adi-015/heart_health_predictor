@@ -62,6 +62,30 @@ docker compose up
 # Frontend: http://localhost:5173
 ```
 
+## Model results
+
+Three models were tuned with `RandomizedSearchCV` optimising for **recall** (primary metric — in a medical screening context, missing a true disease case is worse than a false positive).
+
+| Model | Accuracy | Precision | Recall | F1 | ROC AUC |
+|---|---|---|---|---|---|
+| Logistic Regression (tuned) | 0.7705 | 0.7317 | 0.9091 | 0.8108 | 0.8831 |
+| **Random Forest (tuned)** ✓ | **0.7869** | **0.75** | **0.9091** | **0.8219** | **0.9232** |
+| XGBoost (tuned) | 0.8033 | 0.7692 | 0.9091 | 0.8333 | 0.8690 |
+
+Random Forest was selected: equal recall to XGBoost but best ROC AUC (0.9232) as tiebreaker.
+
+### Global feature importance (SHAP summary)
+
+![SHAP summary plot](results/shap_summary.png)
+
+Each point is one test-set patient. Points to the right (red) push the model toward predicting disease; points to the left (blue) push it away. `thal` and `ca` are the dominant features in this dataset's encoding.
+
+### Single-prediction explanation (SHAP waterfall)
+
+![SHAP waterfall example](results/shap_example_waterfall.png)
+
+Waterfall plot for one test patient — shows how each feature nudges the prediction up or down from the model's base rate.
+
 ## Architecture
 
 ```mermaid
