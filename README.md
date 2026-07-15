@@ -10,19 +10,19 @@ An AI-powered cardiovascular risk screening tool — enter clinical measurements
 
 ---
 
-> **🔗 Live demo:** _TODO: add Render/Vercel URL after deploying_
+> **🔗 Live demo:** _TODO: add Render/Vercel URLs after deploying_
 
 ---
 
 ## Screenshots
 
-> **TODO:** Take and add screenshots after deploying. Suggested shots:
+> **TODO:** Take and add screenshots after deploying. Three suggested shots:
 >
 > | Filename | What to capture |
 > |---|---|
-> | `docs/screenshot-empty.png` | App on first load — form with default values, empty-state placeholder below |
-> | `docs/screenshot-high-risk.png` | Submitted high-risk patient — red card, filled progress bar, red SHAP bars |
-> | `docs/screenshot-low-risk.png` | Submitted low-risk patient — green card, low probability, all-green SHAP bars |
+> | `docs/screenshot-empty.png` | App on first load — form with default values, empty-state placeholder |
+> | `docs/screenshot-high-risk.png` | High-risk patient submitted — red card, filled progress bar, red SHAP bars |
+> | `docs/screenshot-low-risk.png` | Low-risk patient submitted — green card, low probability, green SHAP bars |
 >
 > Once you have the images, replace this block with:
 > ```md
@@ -33,10 +33,6 @@ An AI-powered cardiovascular risk screening tool — enter clinical measurements
 
 ---
 
-<!-- TODO: add a GIF or screenshot of the app here after deployment
-![App screenshot](docs/screenshot.png)
--->
-
 ## Tech stack
 
 | Layer | Technology |
@@ -46,6 +42,8 @@ An AI-powered cardiovascular risk screening tool — enter clinical measurements
 | Backend | FastAPI + uvicorn, Dockerized |
 | Frontend | React 18 + Vite + Tailwind CSS + Recharts |
 | Data | UCI Cleveland Heart Disease dataset (303 patients) |
+
+---
 
 ## Local setup
 
@@ -60,36 +58,38 @@ An AI-powered cardiovascular risk screening tool — enter clinical measurements
 ```bash
 # From repo root
 pip install -r requirements.txt          # ML dependencies
-pip install -r backend/requirements.txt  # FastAPI + uvicorn etc.
+pip install -r backend/requirements.txt  # FastAPI, uvicorn, etc.
 
 cd backend
 uvicorn app.main:app --reload --port 8001
-# API at http://localhost:8001
-# Docs at http://localhost:8001/docs
+# API:  http://localhost:8001
+# Docs: http://localhost:8001/docs
 ```
 
 ### Frontend
 
 ```bash
 cd frontend
-cp .env.example .env    # default points to localhost:8001
+cp .env.example .env    # defaults to localhost:8001 — change if needed
 npm install
 npm run dev
-# App at http://localhost:5173
+# App: http://localhost:5173
 ```
 
-### With Docker Compose (both together)
+### Both together with Docker Compose
 
 ```bash
 # From repo root
 docker compose up
-# Backend: http://localhost:8000
+# Backend:  http://localhost:8000
 # Frontend: http://localhost:5173
 ```
 
+---
+
 ## Model results
 
-Three models were tuned with `RandomizedSearchCV` optimising for **recall** (primary metric — in a medical screening context, missing a true disease case is worse than a false positive).
+Three models were tuned with `RandomizedSearchCV` optimising for **recall** — in a medical screening context, missing a true disease case is worse than a false positive.
 
 | Model | Accuracy | Precision | Recall | F1 | ROC AUC |
 |---|---|---|---|---|---|
@@ -97,19 +97,21 @@ Three models were tuned with `RandomizedSearchCV` optimising for **recall** (pri
 | **Random Forest (tuned)** ✓ | **0.7869** | **0.75** | **0.9091** | **0.8219** | **0.9232** |
 | XGBoost (tuned) | 0.8033 | 0.7692 | 0.9091 | 0.8333 | 0.8690 |
 
-Random Forest was selected: equal recall to XGBoost but best ROC AUC (0.9232) as tiebreaker.
+Random Forest was selected: equal recall to the others, highest ROC AUC (0.9232) as tiebreaker.
 
 ### Global feature importance (SHAP summary)
 
 ![SHAP summary plot](results/shap_summary.png)
 
-Each point is one test-set patient. Points to the right (red) push the model toward predicting disease; points to the left (blue) push it away. `thal` and `ca` are the dominant features in this dataset's encoding.
+Each dot is one test-set patient. Dots to the right push the model toward predicting disease; dots to the left push it away. `thal` and `ca` dominate — an artifact of this dataset mirror's encoding (see [`data/README.md`](data/README.md) for details).
 
 ### Single-prediction explanation (SHAP waterfall)
 
 ![SHAP waterfall example](results/shap_example_waterfall.png)
 
-Waterfall plot for one test patient — shows how each feature nudges the prediction up or down from the model's base rate.
+Shows how each feature nudges one patient's prediction up or down from the model's base rate.
+
+---
 
 ## Architecture
 
@@ -137,12 +139,24 @@ flowchart LR
 
 A single `/predict` request:
 1. `PatientInput` is validated by Pydantic (13 fields, range-checked)
-2. Passed through the saved fitted preprocessor (median imputation → standard scaling → one-hot encoding)
+2. Passed through the saved fitted preprocessor — median imputation → standard scaling → one-hot encoding
 3. Random Forest returns class-1 probability
-4. SHAP TreeExplainer computes per-feature contributions for that row
+4. SHAP TreeExplainer computes per-feature contributions for that specific row
 5. Top 5 factors by absolute impact are returned alongside the prediction
+
+---
 
 ## Deployment
 
-- **Backend → Render**: see [`backend/README.md`](backend/README.md)
-- **Frontend → Vercel**: see [`frontend/README.md`](frontend/README.md)
+| Service | Platform | Guide |
+|---|---|---|
+| Backend (FastAPI) | Render (Docker) | [`backend/README.md`](backend/README.md) |
+| Frontend (React) | Vercel | [`frontend/README.md`](frontend/README.md) |
+
+After deploying, set `VITE_API_URL` in your Vercel environment variables to the Render service URL, then redeploy the frontend.
+
+---
+
+## License
+
+[MIT](LICENSE)
