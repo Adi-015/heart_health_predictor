@@ -2,15 +2,18 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install ML dependencies first (heavier, changes less often)
-COPY requirements.txt ./backend_requirements.txt
+# ML deps first — they're heavier and change less often than app code
+COPY requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY backend/requirements.txt ./backend_requirements.txt
 RUN pip install --no-cache-dir -r backend_requirements.txt
 
-# Copy the full repo so ML modules (preprocess.py, train.py, shap_explain.py, models/) are reachable
-COPY .. /app
-
-# Install ML project requirements
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# Copy everything needed: ML modules, models/, data/, backend/
+COPY preprocess.py train.py shap_explain.py ./
+COPY data/ ./data/
+COPY models/ ./models/
+COPY backend/ ./backend/
 
 ENV PYTHONPATH=/app
 
