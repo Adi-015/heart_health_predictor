@@ -14,6 +14,25 @@ An AI-powered cardiovascular risk screening tool — enter clinical measurements
 
 ---
 
+## Screenshots
+
+> **TODO:** Take and add screenshots after deploying. Suggested shots:
+>
+> | Filename | What to capture |
+> |---|---|
+> | `docs/screenshot-empty.png` | App on first load — form with default values, empty-state placeholder below |
+> | `docs/screenshot-high-risk.png` | Submitted high-risk patient — red card, filled progress bar, red SHAP bars |
+> | `docs/screenshot-low-risk.png` | Submitted low-risk patient — green card, low probability, all-green SHAP bars |
+>
+> Once you have the images, replace this block with:
+> ```md
+> ![Empty state](docs/screenshot-empty.png)
+> ![High risk result](docs/screenshot-high-risk.png)
+> ![Low risk result](docs/screenshot-low-risk.png)
+> ```
+
+---
+
 <!-- TODO: add a GIF or screenshot of the app here after deployment
 ![App screenshot](docs/screenshot.png)
 -->
