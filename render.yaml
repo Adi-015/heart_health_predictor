@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: heart-health-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: PYTHONPATH
+        value: /app
+    healthCheckPath: /health
