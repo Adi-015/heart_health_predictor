@@ -57,8 +57,10 @@ An AI-powered cardiovascular risk screening tool — enter clinical measurements
 
 ```bash
 # From repo root
-pip install -r requirements.txt          # ML dependencies
-pip install -r backend/requirements.txt  # FastAPI, uvicorn, etc.
+pip install -r requirements.txt          # ML engine: sklearn, shap, xgboost, etc.
+pip install -r backend/requirements.txt  # API layer: FastAPI, uvicorn, etc.
+# Two separate files — root handles model training and inference deps,
+# backend/ handles the web framework. Both are needed to run the server.
 
 cd backend
 uvicorn app.main:app --reload --port 8001
