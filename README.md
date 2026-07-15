@@ -62,6 +62,37 @@ docker compose up
 # Frontend: http://localhost:5173
 ```
 
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph Browser
+        UI["React UI\n(Vite + Tailwind)"]
+    end
+
+    subgraph Backend ["FastAPI Backend (Docker)"]
+        API["POST /predict"]
+        PRE["Fitted Preprocessor\n(preprocessor.pkl)"]
+        RF["Random Forest\n(model.pkl)"]
+        SHAP["SHAP TreeExplainer"]
+    end
+
+    UI -->|"PatientInput JSON\n13 clinical fields"| API
+    API --> PRE
+    PRE -->|"Transformed features\n(scaled + one-hot)"| RF
+    RF -->|"predict_proba()"| API
+    PRE -->|"Same transformed input"| SHAP
+    SHAP -->|"Top 5 SHAP values\n(feature, impact)"| API
+    API -->|"PredictionResponse\nrisk_label · probability · top_factors"| UI
+```
+
+A single `/predict` request:
+1. `PatientInput` is validated by Pydantic (13 fields, range-checked)
+2. Passed through the saved fitted preprocessor (median imputation → standard scaling → one-hot encoding)
+3. Random Forest returns class-1 probability
+4. SHAP TreeExplainer computes per-feature contributions for that row
+5. Top 5 factors by absolute impact are returned alongside the prediction
+
 ## Deployment
 
 - **Backend → Render**: see [`backend/README.md`](backend/README.md)
