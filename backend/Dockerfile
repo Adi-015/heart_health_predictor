@@ -15,8 +15,11 @@ COPY data/ ./data/
 COPY models/ ./models/
 COPY backend/ ./backend/
 
+# PYTHONPATH=/app lets backend code import ML modules (preprocess, train, etc.) from repo root
 ENV PYTHONPATH=/app
 
 EXPOSE 8000
 
-CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run from backend/ so 'from app.api.routes import ...' resolves correctly
+WORKDIR /app/backend
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
