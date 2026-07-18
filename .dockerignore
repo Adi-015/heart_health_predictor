@@ -1,0 +1,10 @@
+frontend/
+.git/
+__pycache__/
+*.pyc
+results/
+figures/
+.env
+venv/
+.venv/
+*.ipynb

@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8001'
+const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8001'
 
 export async function predict(patient) {
   const res = await fetch(`${BASE}/predict`, {
