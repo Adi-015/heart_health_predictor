@@ -1,0 +1,21 @@
+{
+  "model_type": "Random Forest (tuned)",
+  "hyperparams": {
+    "n_estimators": 100,
+    "min_samples_split": 5,
+    "min_samples_leaf": 1,
+    "max_depth": 5,
+    "class_weight": "balanced"
+  },
+  "metrics": {
+    "model": "Random Forest (tuned)",
+    "accuracy": 0.7869,
+    "precision": 0.75,
+    "recall": 0.9091,
+    "f1": 0.8219,
+    "roc_auc": 0.9232
+  },
+  "dataset_size": 303,
+  "date": "2026-07-10",
+  "reason": "Highest recall on test set (primary metric for medical screening); ROC AUC used as tiebreaker."
+}

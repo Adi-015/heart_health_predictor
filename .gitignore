@@ -11,11 +11,14 @@ venv/
 env/
 .env
 
-# ML artifacts
-*.pkl
+# ML artifacts — ignore generated model files but track the deployment artifacts
 *.joblib
 *.h5
-models/
+models/*.pkl
+models/*.h5
+# keep the three files Render needs to run the server
+!models/model.pkl
+!models/preprocessor.pkl
 
 # Generated data & outputs
 figures/
