@@ -33,6 +33,10 @@ An AI-powered cardiovascular risk screening tool — enter clinical measurements
 
 ---
 
+## Design decision: two assessment paths
+
+The UCI Cleveland dataset requires clinical measurements — cholesterol, ECG results, stress test data — that most people don't have readily available. Asking for these fields upfront would make the tool useless for anyone without recent lab results. So the app branches at intake: users with medical reports get the full ML-driven risk score with SHAP explanations; users without get a short rule-based guidance form covering self-reportable factors (chest pain, breathlessness, family history, smoking) that tells them what tests to ask their GP for. The ML model is only invoked on the clinical path — the simple path is transparent if/else logic with no black box.
+
 ## Tech stack
 
 | Layer | Technology |
