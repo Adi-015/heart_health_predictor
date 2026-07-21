@@ -6,11 +6,40 @@ const DEFAULTS = {
   oldpeak: 1.0, slope: 1, ca: 0, thal: 2,
 }
 
-function Field({ label, hint, children }) {
+function InfoTip({ text }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <span className="relative inline-block ml-1 align-middle">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="text-gray-400 hover:text-blue-500 text-xs leading-none focus:outline-none"
+        aria-label="More information"
+      >
+        ⓘ
+      </button>
+      {open && (
+        <span className="absolute left-0 top-5 z-10 w-64 rounded-md bg-gray-800 text-white text-xs p-2.5 leading-relaxed shadow-lg">
+          {text}
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="ml-2 text-gray-400 hover:text-white"
+          >
+            ✕
+          </button>
+        </span>
+      )}
+    </span>
+  )
+}
+
+function Field({ label, hint, tip, children }) {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-1">
         {label}
+        {tip && <InfoTip text={tip} />}
         {hint && <span className="ml-1 text-xs text-gray-400 font-normal">{hint}</span>}
       </label>
       {children}
@@ -20,8 +49,17 @@ function Field({ label, hint, children }) {
 
 const inputCls = 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
 
-export default function PatientForm({ onSubmit, loading }) {
-  const [form, setForm] = useState(DEFAULTS)
+const TIPS = {
+  cp: "The type of chest pain or discomfort you experience, ranging from classic angina (pressure during exertion) to no symptoms at all. Different patterns carry different risk levels — typical angina is most strongly linked to heart disease.",
+  restecg: "The result of a resting ECG (electrocardiogram), which records the heart's electrical activity while you're at rest. Abnormalities like ST-T wave changes can indicate underlying heart problems. Found on your ECG report.",
+  thalach: "The highest heart rate you reached during a stress test. A lower-than-expected peak can suggest the heart isn't pumping efficiently under load. From your stress test report.",
+  oldpeak: "How much the ECG's ST segment dips below baseline during exercise. Larger dips (higher values) can indicate the heart muscle isn't getting enough blood flow under stress. From your ECG or stress test report.",
+  ca: "The number of major coronary arteries showing significant narrowing or blockage, as seen on a coronary angiogram. Ranges from 0 (no blockages) to 3. From your angiogram or cardiac catheterisation report.",
+  thal: "Result from a thallium (nuclear) stress test showing blood flow through the heart muscle. Normal means flow is healthy; a reversible defect appears under stress but recovers at rest; a fixed defect is present both at rest and under stress. From your nuclear stress test report.",
+}
+
+export default function PatientForm({ onSubmit, loading, prefill = {} }) {
+  const [form, setForm] = useState({ ...DEFAULTS, ...prefill })
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
   const num = (k, v) => set(k, v === '' ? '' : Number(v))
@@ -54,7 +92,7 @@ export default function PatientForm({ onSubmit, loading }) {
       <section>
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Symptoms</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Chest Pain Type">
+          <Field label="Chest Pain Type" tip={TIPS.cp}>
             <select value={form.cp} onChange={e => num('cp', e.target.value)} className={inputCls}>
               <option value={0}>Typical Angina</option>
               <option value={1}>Atypical Angina</option>
@@ -86,7 +124,7 @@ export default function PatientForm({ onSubmit, loading }) {
               onChange={e => num('chol', e.target.value)} className={inputCls} required />
           </Field>
 
-          <Field label="Max Heart Rate" hint="bpm">
+          <Field label="Max Heart Rate" hint="bpm" tip={TIPS.thalach}>
             <input type="number" min={60} max={250} value={form.thalach}
               onChange={e => num('thalach', e.target.value)} className={inputCls} required />
           </Field>
@@ -104,7 +142,7 @@ export default function PatientForm({ onSubmit, loading }) {
       <section>
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Diagnostics</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Resting ECG">
+          <Field label="Resting ECG" tip={TIPS.restecg}>
             <select value={form.restecg} onChange={e => num('restecg', e.target.value)} className={inputCls}>
               <option value={0}>Normal</option>
               <option value={1}>ST-T Wave Abnormality</option>
@@ -112,7 +150,7 @@ export default function PatientForm({ onSubmit, loading }) {
             </select>
           </Field>
 
-          <Field label="ST Depression" hint="oldpeak">
+          <Field label="ST Depression" hint="oldpeak" tip={TIPS.oldpeak}>
             <input type="number" min={0} max={10} step={0.1} value={form.oldpeak}
               onChange={e => num('oldpeak', e.target.value)} className={inputCls} required />
           </Field>
@@ -125,12 +163,12 @@ export default function PatientForm({ onSubmit, loading }) {
             </select>
           </Field>
 
-          <Field label="Major Vessels" hint="0–3, fluoroscopy">
+          <Field label="Major Vessels" hint="0–3" tip={TIPS.ca}>
             <input type="number" min={0} max={3} value={form.ca}
               onChange={e => num('ca', e.target.value)} className={inputCls} required />
           </Field>
 
-          <Field label="Thalassemia">
+          <Field label="Thalassemia" tip={TIPS.thal}>
             <select value={form.thal} onChange={e => num('thal', e.target.value)} className={inputCls}>
               <option value={1}>Normal</option>
               <option value={2}>Reversible Defect</option>
