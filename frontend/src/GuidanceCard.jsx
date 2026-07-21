@@ -1,10 +1,10 @@
 function scoreAnswers({ age, sex, bp, chestPain, breathlessness, familyHistory, smoking }) {
   const flags = []
 
-  if (age >= 45 && sex === 1) flags.push('Age ≥ 45 (male)')
-  if (age >= 55 && sex === 0) flags.push('Age ≥ 55 (female)')
-  if (bp === 'high') flags.push('High blood pressure (≥ 140/90)')
-  if (bp === 'elevated') flags.push('Elevated blood pressure (120–139/80–89)')
+  if (age >= 45 && sex === 1) flags.push('Age \u2265 45 (male)')
+  if (age >= 55 && sex === 0) flags.push('Age \u2265 55 (female)')
+  if (bp === 'high') flags.push('High blood pressure (\u2265 140/90)')
+  if (bp === 'elevated') flags.push('Elevated blood pressure (120-139/80-89)')
   if (chestPain === 'severe') flags.push('Frequent or severe chest pain during activity')
   if (chestPain === 'mild') flags.push('Occasional chest discomfort during activity')
   if (breathlessness === 'yes') flags.push('Shortness of breath during normal exercise')
@@ -29,7 +29,7 @@ function recommendation(flags) {
     return {
       level: 'Worth monitoring',
       colour: 'amber',
-      advice: 'A few indicators are present. It's a good idea to discuss these with your GP at your next visit and ask about an ECG or blood pressure check.',
+      advice: "A few indicators are present. It's a good idea to discuss these with your GP at your next visit and ask about an ECG or blood pressure check.",
     }
   }
   return {

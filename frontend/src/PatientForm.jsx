@@ -20,8 +20,8 @@ function Field({ label, hint, children }) {
 
 const inputCls = 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
 
-export default function PatientForm({ onSubmit, loading }) {
-  const [form, setForm] = useState(DEFAULTS)
+export default function PatientForm({ onSubmit, loading, prefill = {} }) {
+  const [form, setForm] = useState({ ...DEFAULTS, ...prefill })
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
   const num = (k, v) => set(k, v === '' ? '' : Number(v))
