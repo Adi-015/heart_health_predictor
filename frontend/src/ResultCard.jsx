@@ -2,6 +2,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ReferenceLine, ResponsiveContainer, Cell
 } from 'recharts'
+import { labelFeature } from './featureLabels'
 
 function probabilityLabel(prob) {
   if (prob >= 0.75) return 'Very High'
@@ -15,8 +16,7 @@ function topFactorSummary(factors) {
   if (!factors.length) return null
   const top = factors[0]
   const dir = top.impact > 0 ? 'increasing' : 'decreasing'
-  // Feature names come as one-hot suffixes like "thal_2", "ca_0", "cp_1"
-  const name = top.feature.replace(/_\d+$/, '').replace(/_/g, ' ')
+  const name = labelFeature(top.feature)
   return `The strongest factor was ${name}, ${dir} predicted risk.`
 }
 
@@ -26,7 +26,7 @@ export default function ResultCard({ result }) {
   const isHigh = probability >= 0.5
 
   const chartData = top_factors.map(f => ({
-    name: f.feature,
+    name: labelFeature(f.feature),
     impact: f.impact,
   }))
 
