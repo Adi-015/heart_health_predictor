@@ -10,7 +10,10 @@ An AI-powered cardiovascular risk screening tool — enter clinical measurements
 
 ---
 
-> **🔗 Live demo:** _TODO: add Render/Vercel URLs after deploying_
+> **🔗 Live demo:**
+> - **Frontend:** _TODO: add Vercel URL_
+> - **Backend API:** https://heart-health-predictor-89fn.onrender.com
+> - **API docs:** https://heart-health-predictor-89fn.onrender.com/docs
 
 ---
 
